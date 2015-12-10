@@ -1,21 +1,15 @@
 -- Link: https://www.hackerrank.com/challenges/pentagonal-numbers
 
-import Control.Monad (replicateM_)
-import Data.Functor  ((<$>))
+import qualified Data.ByteString.Char8 as B
+import Data.Maybe (fromJust)
 
 main :: IO ()
-main = do
-    n <- readInt
-    replicateM_ n processTestCase
-
-processTestCase :: IO ()
-processTestCase = print . pentagonal =<< readInt
-
-readInt :: IO Int
-readInt = read <$> getLine
+main = B.getContents >>=
+    mapM_ print . map pentagonal . tail . readInts . B.words
+  where
+    readInts = map (fst . fromJust . B.readInt)
 
 pentagonal :: Int -> Int
-pentagonal n =
-    if n < 1
-    then error "pentagonal: nonpositive argument"
-    else n * (3 * n - 1) `quot` 2
+pentagonal n
+    | n < 1     = error "pentagonal: nonpositive argument"
+    | otherwise = n * (3 * n - 1) `quot` 2
